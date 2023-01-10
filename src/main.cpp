@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <eigen3/Eigen/Dense>
 #include <vector>
 
 #include "ins/imu.h"
@@ -28,8 +29,8 @@ int main() {
     // (弃用)
     // 第 0 时刻状态(由实验指导书给出)
     // double init_state_1[10] = {
-    //    91620.0,           23.1373950708,    113.3713651222, 2.175, 0.0, 0.0, 0.0, 0.0107951084511778,
-    //    -2.14251290749072, -75.7498049314083};
+    //    91620.0,           23.1373950708,    113.3713651222, 2.175, 0.0, 0.0,
+    //    0.0, 0.0107951084511778, -2.14251290749072, -75.7498049314083};
     // 第 1 时刻状态(由参考结果给出)
     // double init_state_2[10] = {0.0};
     // fread(init_state_2, sizeof(double), 10, fp_ref);
@@ -117,8 +118,10 @@ int main() {
     // // 保存解算结果(文本格式)
     // FILE *fp_res_txt = fopen("data/test/res.txt", "w");
     // for (auto &state : res) {
-    //     fprintf(fp_res_txt, "%.3f %.12f %.12f %.12f %.12f %.12f %.12f %.12f %.12f %.12f\n", state.time, state.pos[0],
-    //             state.pos[1], state.pos[2], state.vel[0], state.vel[1], state.vel[2], state.euler[0], state.euler[1],
+    //     fprintf(fp_res_txt, "%.3f %.12f %.12f %.12f %.12f %.12f %.12f %.12f
+    //     %.12f %.12f\n", state.time, state.pos[0],
+    //             state.pos[1], state.pos[2], state.vel[0], state.vel[1],
+    //             state.vel[2], state.euler[0], state.euler[1],
     //             state.euler[2]);
     // }
 

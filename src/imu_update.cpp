@@ -1,5 +1,5 @@
-#include <Eigen/Dense>
 #include <cstdio>
+#include <eigen3/Eigen/Dense>
 #include <iostream>
 
 #include "ins/imu.h"

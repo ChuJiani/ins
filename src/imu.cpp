@@ -1,6 +1,7 @@
 #include "ins/imu.h"
 
 #include <cstdio>
+#include <eigen3/Eigen/Dense>
 
 #include "ins/utils.h"
 

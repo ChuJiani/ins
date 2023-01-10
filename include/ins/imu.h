@@ -1,7 +1,7 @@
 #ifndef IMU_H
 #define IMU_H
 
-#include <Eigen/Dense>
+#include <eigen3/Eigen/Dense>
 
 struct State {
     // State 与 Imu 严格区分，State 仅作展示数据用，
