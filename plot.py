@@ -38,7 +38,7 @@ def plot(res):
 
 if __name__ == '__main__':
     # 文件配置
-    data_root = 'bin/data/test/'
+    data_root = 'data/test/'
     ref_path = data_root + 'ref.bin'
     res_path = data_root + 'res.bin'
     diff_path = data_root + 'diff.bin'
