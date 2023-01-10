@@ -1,7 +1,7 @@
 # 惯导机械编排（C++）
 ## 1 说明
-1. 源码中已附带 `Eigen` 库源码，可直接构建，不依赖系统环境，无需手动添加。
-2. 源码在 `Windows 10` 和 `Arch Linux` 均已通过测试，本说明以 `Windows 10` 为例。
+1. 将 `eigen` 库的 `Eigen` 文件夹放入 `./include`，即可直接构建，不依赖系统环境。
+2. 源码在 `Windows 10` 和 `Arch Linux` 均已通过测试，本说明以 `Windows 10` 为例。如果想使用 Linux 的系统 `eigen` 库进行构建，参见 [linux 分支](https://github.com/ChuJiani/ins/tree/linux)。
 ## 2 构建
 项目采用 `CMake` 构建，根据需求环境选择构建配置。
 ### 2.1 快速构建
