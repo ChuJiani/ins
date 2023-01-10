@@ -1,6 +1,7 @@
 # 惯导机械编排（C++）
 ## 1 说明
-本说明以 `Arch Linux` 为例，`Eigen` 库采用系统库 `<eigen3/Eigen/Dense>`，如果没有请下载。
+- 如需在 `Windows` 环境测试参见主分支。
+- 本说明以 `Arch Linux` 为例，`Eigen` 库采用系统库 `<eigen3/Eigen/Dense>`，按需安装。
 ```Shell
 sudo pacman -S eigen
 ```
