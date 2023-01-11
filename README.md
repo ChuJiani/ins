@@ -13,7 +13,7 @@ sudo pacman -S eigen
 cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
-生成的可执行程序路径为 `./bin/pure_ins.exe`，其工作路径与工作目录相同。例如，将示例数据文件放在 `./data/test/` 然后解算：
+生成的可执行程序路径为 `./bin/pure_ins`，其工作路径与工作目录相同。例如，将示例数据文件放在 `./data/test/` 然后解算：
 ```Shell
 ./bin/pure_ins
 ```
@@ -32,5 +32,5 @@ cmake --build build
 ## 3 绘图
 附带一个简易的画图脚本，需要 `python` 环境及 `numpy` 和 `matplotlib`。
 ```PowerShell
-python ./plot.py
+python ./plot.py group
 ```
