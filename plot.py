@@ -1,37 +1,60 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def plot(res):
+def plot(res, head: str):
     # 绘制 位置-时间 图
-    plt.figure('Position-Time')
-    plt.subplot(311)
-    plt.plot(res[:, 0], res[:, 1])
-    plt.subplot(312)
-    plt.plot(res[:, 0], res[:, 2])
-    plt.subplot(313)
-    plt.plot(res[:, 0], res[:, 3])
+    fig = plt.figure(head +"_position_time")
+    axs = fig.subplots(3, 1)
+    fig.suptitle('Position-Time')
+    axs[0].plot(res[:, 0], res[:, 1])
+    axs[0].set_xlabel('Time(s)')
+    axs[0].set_ylabel('Latitude(deg)')
+    axs[1].plot(res[:, 0], res[:, 2])
+    axs[1].set_xlabel('Time(s)')
+    axs[1].set_ylabel('Longitude(deg)')
+    axs[2].plot(res[:, 0], res[:, 3])
+    axs[2].set_xlabel('Time(s)')
+    axs[2].set_ylabel('Altitude(m)')
+    fig.tight_layout()
 
     # 绘制 速度-时间 图
-    plt.figure('Velocity-Time')
-    plt.subplot(311)
-    plt.plot(res[:, 0], res[:, 4])
-    plt.subplot(312)
-    plt.plot(res[:, 0], res[:, 5])
-    plt.subplot(313)
-    plt.plot(res[:, 0], res[:, 6])
+    fig = plt.figure(head + "_velocity_time")
+    axs = fig.subplots(3, 1)
+    fig.suptitle('Velocity-Time')
+    axs[0].plot(res[:, 0], res[:, 4])
+    axs[0].set_xlabel('Time(s)')
+    axs[0].set_ylabel('North Speed(m/s)')
+    axs[1].plot(res[:, 0], res[:, 5])
+    axs[1].set_xlabel('Time(s)')
+    axs[1].set_ylabel('East Speed(m/s)')
+    axs[2].plot(res[:, 0], res[:, 6])
+    axs[2].set_xlabel('Time(s)')
+    axs[2].set_ylabel('Down Speed(m/s)')
+    fig.tight_layout()
 
-    # 绘制 角度-时间 图
-    plt.figure('Angle-Time')
-    plt.subplot(311)
-    plt.plot(res[:, 0], res[:, 7])
-    plt.subplot(312)
-    plt.plot(res[:, 0], res[:, 8])
-    plt.subplot(313)
-    plt.plot(res[:, 0], res[:, 9])
+    # 绘制 姿态-时间 图
+    fig = plt.figure(head + "_attitude_time")
+    axs = fig.subplots(3, 1)
+    fig.suptitle('Attitude-Time')
+    axs[0].plot(res[:, 0], res[:, 7])
+    axs[0].set_xlabel('Time(s)')
+    axs[0].set_ylabel('Roll(deg)')
+    axs[1].plot(res[:, 0], res[:, 8])
+    axs[1].set_xlabel('Time(s)')
+    axs[1].set_ylabel('Pitch(deg)')
+    axs[2].plot(res[:, 0], res[:, 9])
+    axs[2].set_xlabel('Time(s)')
+    axs[2].set_ylabel('Heading(deg)')
+    fig.tight_layout()
 
     # 绘制 纬度-经度 图
-    plt.figure('Lat-Lon')
-    plt.plot(res[:, 1], res[:, 2])
+    fig = plt.figure(head + "_latitude_longitude")
+    axs = fig.subplots(1, 1)
+    fig.suptitle('Latitude-Longitude')
+    axs.plot(res[:, 1], res[:, 2])
+    axs.set_xlabel('Latitude(deg)')
+    axs.set_ylabel('Longitude(deg)')
+    fig.tight_layout()
 
     plt.show()
 
@@ -64,20 +87,20 @@ if __name__ == '__main__':
         ref = np.fromfile(ref_path, dtype=np.float64)
         ref = ref.reshape(int(len(ref)/10), 10)
         print('Plotting ref...')
-        plot(ref)
+        plot(ref, "ref")
 
     # 结果数据
     if PLOT_RES == 1:
         res = np.fromfile(res_path, dtype=np.float64)
         res = res.reshape(int(len(res)/10), 10)
         print('Plotting res...')
-        plot(res)
+        plot(res, "res")
 
     # 差异数据
     if PLOT_DIFF == 1:
         diff = np.fromfile(diff_path, dtype=np.float64)
         diff = diff.reshape(int(len(diff)/10), 10)
         print('Plotting diff...')
-        plot(diff)
+        plot(diff, "diff")
 
     
