@@ -163,3 +163,60 @@ int Imu::update(const Imu &imu_old, const Imu &imu_now) {
 
     return 0;
 }
+
+int Imu::update_zero_speed(const Imu &imu_old, const Imu &imu_now) {
+    // 时间间隔
+    double dt = time_ - imu_now.get_time();
+
+    // 观测值提取(均为增量形式)
+    Vector3d gyro_now = imu_now.get_gyro();
+    Vector3d acc_now = imu_now.get_acc();
+    Vector3d gyro_new = gyro_;
+    Vector3d acc_new = acc_;
+
+    // 状态值提取
+    Vector3d euler_now = imu_now.get_euler();
+    Vector3d vel_now = imu_now.get_vel();
+    Vector3d pos_now = imu_now.get_pos();
+
+    // 计算方向余弦矩阵
+    Matrix3d dcm_now = euler_to_dcm(euler_now);
+
+    // ------------------- 姿态更新部分 ------------------- //
+    // 等效旋转矢量(b系)
+    Vector3d gyro_cross = gyro_now.cross(gyro_new);
+    Vector3d theta = gyro_new + gyro_cross / 12;
+    // 等效旋转矩阵(b系)
+    Matrix3d theta_skew = get_skew(theta);
+    double theta_norm = theta.norm();
+    double a1 = sin(theta_norm) / theta_norm;
+    double a2 = (1 - cos(theta_norm)) / (theta_norm * theta_norm);
+    Matrix3d C_bb = Matrix3d::Identity() + a1 * theta_skew + a2 * theta_skew * theta_skew;
+
+    // 等效旋转矢量(n系)
+    Vector3d w_ie = get_w_ie(pos_now(0));        // 地球自转角速度
+    Vector3d w_en = get_w_en(pos_now, vel_now);  // 大地坐标系转换到导航坐标系的角速度
+    Vector3d zeta = (w_ie + w_en) * dt;
+    // 等效旋转矩阵(n系)
+    Matrix3d zeta_skew = get_skew(zeta);
+    double zeta_norm = zeta.norm();
+    double b1 = sin(zeta_norm) / zeta_norm;
+    double b2 = (1 - cos(zeta_norm)) / (zeta_norm * zeta_norm);
+    Matrix3d C_nn = Matrix3d::Identity() - b1 * zeta_skew + b2 * zeta_skew * zeta_skew;
+
+    // 计算新的姿态矩阵
+    Matrix3d dcm_new = C_nn * dcm_now * C_bb;
+    // 新的姿态角
+    Vector3d euler_new = dcm_to_euler(dcm_new);
+
+    // ------------------- 速度更新部分 ------------------- //
+
+    // ------------------- 位置更新部分 ------------------- //
+
+    // ------------------- 整体更新 ------------------- //
+    this->set_euler(euler_new);
+    this->set_vel(Vector3d(0.0, 0.0, 0.0));
+    this->set_pos(pos_now);
+
+    return 0;
+}
