@@ -35,5 +35,6 @@ cmake --build build
  ## 3 绘图
  附带一个简易的画图脚本，需要 `python` 环境及 `numpy` 和 `matplotlib`。
  ```PowerShell
- python ./plot.py
+ python ./plot.py group
  ```
+脚本将按顺序绘出 `data/group/` 中 `ref.bin`， `res.bin` 和 `diff.bin` 的数据，如果想绘制零速修正的结算结果，需要修改脚本中对应文件名。
