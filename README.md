@@ -1,6 +1,6 @@
 # 惯导机械编排（C++）
 ## 1 说明
-- 如需在 `Windows` 环境测试参见主分支。
+- 如需在 `Windows` 环境测试参见 [主分支](https://github.com/ChuJiani/ins)。
 - 本说明以 `Arch Linux` 为例，`Eigen` 库采用系统库 `<eigen3/Eigen/Dense>`，按需安装。
 ```Shell
 sudo pacman -S eigen
@@ -18,6 +18,12 @@ cmake --build build
 ./bin/pure_ins
 ```
 程序将读取 `./data/test/` 中 `imu.bin` 和 `ref.bin` 的数据，并在相同目录输出 `res.bin` 和 `diff.bin`。
+
+带有零速修正功能的可执行程序路径为 ./bin/pure_ins_check，执行方式相同。
+```Shell
+./bin/pure_ins_check group
+```
+程序将读取 `./data/group/` 中 `imu.bin` 和 `ref.bin` 的数据，并读取 `zero_periods.txt` 中的数值作为零速区域进行解算，解算完成后在相同目录输出 `res_check.bin` 和 `diff_check.bin`。
 ### 2.2 代码调试（以 VSCode 为例）
 > 注意：Debug 版本的可执行文件运行效率较低（解算耗时约为 Release 版本的 100 倍），如果需要快速得到结果请选择生成 Release 版本。
 
