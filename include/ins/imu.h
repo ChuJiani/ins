@@ -8,10 +8,10 @@ struct State {
     // 迭代计算中全程使用 Imu 自身数据，避免量纲转换带来。
 
     // 状态值，角度单位为 deg
-    double time = 0.0;
-    double pos[3] = {0.0};
-    double vel[3] = {0.0};
-    double euler[3] = {0.0};
+    double time_ = 0.0;
+    double pos_[3] = {0.0};
+    double vel_[3] = {0.0};
+    double euler_[3] = {0.0};
 
     // Constructor
     State(){};
@@ -49,6 +49,7 @@ class Imu {
 
     // 通过之前历元的观测值和状态值更新状态值
     int update(const Imu& imu_old, const Imu& imu_now);
+    int update_zero_speed(const Imu& imu_old, const Imu& imu_now);    // 零速更新
 
     // 获取观测值
     double get_time() const { return time_; }

@@ -12,9 +12,15 @@ cmake --build build
 ```
 生成的可执行程序路径为 `./bin/pure_ins.exe`，其工作路径与工作目录相同。例如，将示例数据文件放在 `./data/test/` 然后解算：
 ```PowerShell
- ./bin/pure_ins.exe
+ ./bin/pure_ins.exe test
  ```
  程序将读取 `./data/test/` 中 `imu.bin` 和 `ref.bin` 的数据，并在相同目录输出 `res.bin` 和 `diff.bin`。
+
+ 带有零速修正功能的可执行程序路径为 `./bin/pure_ins_check.exe`，执行方式相同。
+ ```PowerShell
+ ./bin/pure_ins_check.exe group
+ ```
+ 程序将读取 `./data/group/` 中 `imu.bin` 和 `ref.bin` 的数据，并读取 `zero_periods.txt` 中的数值作为零速区域进行解算，解算完成后在相同目录输出 `res_check.bin` 和 `diff_check.bin`。
  ### 2.2 代码调试（以 Visual Studio 为例）
  > 注意：Debug 版本的可执行文件运行效率较低（解算耗时约为 Release 版本的 100 倍），如果需要快速得到结果请选择生成 Release 版本。
 

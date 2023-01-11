@@ -1,3 +1,5 @@
+// 解算时进行零速修正
+
 #include <algorithm>
 #include <cstdio>
 #include <Eigen/Dense>
@@ -22,8 +24,28 @@ int main(int argc, char *argv[]) {
     printf("\x1b[32m[Info] Proceeding data in \"%s\".\n\x1b[0m", file_root.c_str());
     string imu_file = file_root + "imu.bin";
     string ref_file = file_root + "ref.bin";
-    string res_file = file_root + "res.bin";
-    string diff_file = file_root + "diff.bin";
+    string res_file = file_root + "res_check.bin";
+    string diff_file = file_root + "diff_check.bin";
+    string period_file = file_root + "zero_periods.txt";
+
+    // 读取零速时段，如读取失败则不进行零速修正
+    printf("Loading zero periods...\n");
+    vector<pair<double, double>> zero_periods;
+    FILE *fp_periods = fopen(period_file.c_str(), "r");
+    if (fp_periods == nullptr) {
+        printf("\x1b[31m[Fatal] No \"zero_periods.txt\" detected.\x1b[0m\n");
+        return -1;
+    } else {
+        double first, second;
+        while (fscanf(fp_periods, "%lf %lf", &first, &second) == 2) {
+            zero_periods.emplace_back(first, second);
+        }
+        if (zero_periods.size() == 0) {
+            printf("\x1b[31m[Fatal] No data in \"zero_periods.txt\".\x1b[0m\n");
+            return -1;
+        }
+    }
+    fclose(fp_periods);
 
     // 读取参考数据
     printf("Loading ref data file...\n");
@@ -90,8 +112,21 @@ int main(int argc, char *argv[]) {
         Imu imu_new;
         imu_new.read(tmp_buf);
 
-        // 状态更新
-        imu_new.update(imu_old, imu_now);
+        // 判断是否在零速时段
+        double time_new = imu_new.get_time();
+        using pair = pair<double, double>;
+        bool within_zero_period = std::any_of(zero_periods.begin(), zero_periods.end(), [time_new](pair p) {
+            return time_new >= p.first && time_new < p.second;
+        });
+        if (within_zero_period) {
+            // 零速修正
+            imu_new.update_zero_speed(imu_old, imu_now);
+        } else {
+            // 不进行零速修正
+            imu_new.update(imu_old, imu_now);
+        }
+
+        // 存储解算结果
         res.push_back(imu_new.get_state_r2d());  // 保存结果时角度单位为 deg
 
         // 参考状态更新
