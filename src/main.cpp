@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cstdio>
 #include <eigen3/Eigen/Dense>
 #include <vector>
@@ -8,10 +9,25 @@
 using namespace std;
 using namespace Eigen;
 
-int main() {
+int main(int argc, char *argv[]) {
+    // 读取命令行参数
+    if (argc < 2) {
+        printf("\x1b[31m[Error] Please provide a group name as the first command line argument\x1b[0m");
+        return -1;
+    }
+    string group_name = argv[1];
+
+    // 文件配置
+    string file_root = "data/" + group_name + "/";
+    printf("\x1b[32m[Info] Processing data in \"%s\"\n\x1b[0m", file_root.c_str());
+    string imu_file = file_root + "imu.bin";
+    string ref_file = file_root + "ref.bin";
+    string res_file = file_root + "res.bin";
+    string diff_file = file_root + "diff.bin";
+
     // 打开参考数据文件
     printf("Loading ref data file...\n");
-    FILE *fp_ref = fopen("data/test/ref.bin", "rb");
+    FILE *fp_ref = fopen(ref_file.c_str(), "rb");
     if (fp_ref == nullptr) {
         printf("Error: cannot open file.\n");
         return -1;
@@ -32,7 +48,7 @@ int main() {
 
     // 打开原始数据文件
     printf("Loading raw data file...\n");
-    FILE *fp = fopen("data/test/imu.bin", "rb");
+    FILE *fp = fopen(imu_file.c_str(), "rb");
     if (fp == nullptr) {
         printf("Error: cannot open file.\n");
         return -1;
@@ -78,7 +94,7 @@ int main() {
 
         // 用前两个历元的观测值和状态值计算新历元的状态值
         imu_new.update(imu_old, imu_now);
-        res.push_back(imu_new.get_state_r2d());     // 转换成结果需要 rad2deg
+        res.push_back(imu_new.get_state_r2d());  // 转换成结果需要 rad2deg
 
         // 参考状态更新
         imu_old = imu_now;
@@ -88,13 +104,13 @@ int main() {
 
     // 对 ref 和 res 数据作差
     vector<State> diff;
-    for (int i = 0; i < ref.size() - 1; i++) {
+    for (int i = 0; i < min(ref.size(), res.size()); i++) {
         diff.push_back(ref[i].minus(res[i]));
     }
 
     // 保存差异结果
     printf("Saving diff data file...\n");
-    FILE *fp_diff = fopen("data/test/diff.bin", "wb");
+    FILE *fp_diff = fopen(diff_file.c_str(), "wb");
     for (auto &state : diff) {
         fwrite(&state, sizeof(double), 10, fp_diff);
     }
@@ -102,7 +118,7 @@ int main() {
 
     // 保存解算结果
     printf("Saving res data file...\n");
-    FILE *fp_res = fopen("data/test/res.bin", "wb");
+    FILE *fp_res = fopen(res_file.c_str(), "wb");
     for (auto &state : res) {
         fwrite(&state, sizeof(double), 10, fp_res);
     }

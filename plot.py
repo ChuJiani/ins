@@ -37,8 +37,19 @@ def plot(res):
 
 
 if __name__ == '__main__':
+    from sys import argv, exit
+    try:
+        # 获取文件夹名
+        group_name = argv[1]
+        group_name = str(group_name)
+
+    except IndexError:
+        # 参数异常
+        print("\x1b[31m[Error] Please provide a group name as the first command line argument\x1b[0m")
+        exit()
+
     # 文件配置
-    data_root = 'data/test/'
+    data_root = 'data/' + str(argv[1]) + '/'
     ref_path = data_root + 'ref.bin'
     res_path = data_root + 'res.bin'
     diff_path = data_root + 'diff.bin'
