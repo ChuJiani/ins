@@ -2,11 +2,11 @@
 ## 1 说明
 - 如需在 `Windows` 环境测试参见 [主分支](https://github.com/ChuJiani/ins)。
 - 本说明以 `Arch Linux` 为例，`Eigen` 库采用系统库 `<eigen3/Eigen/Dense>`，按需安装。
-```Shell
-sudo pacman -S eigen
-```
+   ```Shell
+   sudo pacman -S eigen
+   ```
 ## 2 构建
-项目采用 `CMake` 构建，根据需求环境选择构建配置。
+项目采用 `CMake` 构建，根据环境选择构建配置。
 ### 2.1 快速构建
 使用 `Ninja` 生成。
 ```PowerShell
@@ -34,3 +34,4 @@ cmake --build build
 ```PowerShell
 python ./plot.py group
 ```
+脚本将按顺序绘出 `data/group/` 中 `ref.bin`， `res.bin` 和 `diff.bin` 的数据，如果想绘制零速修正的结算结果，需要修改脚本中对应文件名。
