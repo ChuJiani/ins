@@ -43,22 +43,30 @@ if __name__ == '__main__':
     res_path = data_root + 'res.bin'
     diff_path = data_root + 'diff.bin'
 
+    # 画图配置
+    PLOT_REF = 1
+    PLOT_RES = 1
+    PLOT_DIFF = 1
+
     # 参考数据
-    ref = np.fromfile(ref_path, dtype=np.float64)
-    ref = ref.reshape(int(len(ref)/10), 10)
-    print('Plotting ref...')
-    plot(ref)
+    if PLOT_REF == 1:
+        ref = np.fromfile(ref_path, dtype=np.float64)
+        ref = ref.reshape(int(len(ref)/10), 10)
+        print('Plotting ref...')
+        plot(ref)
 
     # 结果数据
-    res = np.fromfile(res_path, dtype=np.float64)
-    res = res.reshape(int(len(res)/10), 10)
-    print('Plotting res...')
-    plot(res)
+    if PLOT_RES == 1:
+        res = np.fromfile(res_path, dtype=np.float64)
+        res = res.reshape(int(len(res)/10), 10)
+        print('Plotting res...')
+        plot(res)
 
     # 差异数据
-    diff = np.fromfile(diff_path, dtype=np.float64)
-    diff = diff.reshape(int(len(diff)/10), 10)
-    print('Plotting diff...')
-    plot(diff)
+    if PLOT_DIFF == 1:
+        diff = np.fromfile(diff_path, dtype=np.float64)
+        diff = diff.reshape(int(len(diff)/10), 10)
+        print('Plotting diff...')
+        plot(diff)
 
     
