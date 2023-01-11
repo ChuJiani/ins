@@ -1,10 +1,7 @@
 # 惯导机械编排（C++）
 ## 1 说明
-- 如需在 `Windows` 环境测试参见主分支。
-- 本说明以 `Arch Linux` 为例，`Eigen` 库采用系统库 `<eigen3/Eigen/Dense>`，按需安装。
-```Shell
-sudo pacman -S eigen
-```
+1. 将 `eigen` 库的 `Eigen` 文件夹放入 `./include`，即可直接构建，不依赖系统环境。
+2. 源码在 `Windows 10` 和 `Arch Linux` 均已通过测试，本说明以 `Windows 10` 为例。如果想使用 Linux 的系统 `eigen` 库进行构建，参见 [linux 分支](https://github.com/ChuJiani/ins/tree/linux)。
 ## 2 构建
 项目采用 `CMake` 构建，根据需求环境选择构建配置。
 ### 2.1 快速构建
