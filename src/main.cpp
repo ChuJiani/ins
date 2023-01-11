@@ -10,7 +10,7 @@ using namespace Eigen;
 
 int main() {
     // 打开参考数据文件
-    printf("Loading reference data file...\n");
+    printf("Loading ref data file...\n");
     FILE *fp_ref = fopen("data/test/ref.bin", "rb");
     if (fp_ref == nullptr) {
         printf("Error: cannot open file.\n");
@@ -26,15 +26,7 @@ int main() {
     }
     fclose(fp_ref);
 
-    // (弃用)
-    // 第 0 时刻状态(由实验指导书给出)
-    // double init_state_1[10] = {
-    //    91620.0,           23.1373950708,    113.3713651222, 2.175, 0.0, 0.0,
-    //    0.0, 0.0107951084511778, -2.14251290749072, -75.7498049314083};
-    // 第 1 时刻状态(由参考结果给出)
-    // double init_state_2[10] = {0.0};
-    // fread(init_state_2, sizeof(double), 10, fp_ref);
-    // (采用) 初始状态全部使用 ref 中的数据
+    // 初始状态全部使用 ref 中的数据
     State init_state_1 = ref[0];
     State init_state_2 = ref[1];
 
@@ -46,23 +38,23 @@ int main() {
         return -1;
     }
 
-    // 当时间到达起始时间时,进入解算循环
+    // 当时间对齐到参考结第 1 时刻
     double raw_buf[7];
     fread(raw_buf, sizeof(double), 7, fp);
     double current_time = raw_buf[0];
-    while (current_time < init_state_1.time) {
+    while (current_time < init_state_1.time_) {
         fread(raw_buf, sizeof(double), 7, fp);
         current_time = raw_buf[0];
     }
-    // 补偿至第 0 时刻
+    // 补偿至第 1 时刻(前移 1 时刻)
     fseek(fp, -7 * sizeof(double), SEEK_CUR);
 
-    // 设置第 0 时刻的 IMU
+    // 设置第 1 时刻的 IMU
     Imu imu_old;
     imu_old.read(fp);
     imu_old.set_state(init_state_1);
 
-    // 设置第 1 时刻的 IMU
+    // 设置第 2 时刻的 IMU
     Imu imu_now;
     imu_now.read(fp);
     imu_now.set_state(init_state_2);
@@ -74,18 +66,19 @@ int main() {
 
     // 数据已对齐,可以开始解算
     while (true) {
-        fread(raw_buf, sizeof(double), 7, fp);
+        static double tmp_buf[7] = {0.0};
+        fread(tmp_buf, sizeof(double), 7, fp);
         if (feof(fp)) {
             break;
         }
 
         // 读取新时刻观测值
         Imu imu_new;
-        imu_new.read(raw_buf);
+        imu_new.read(tmp_buf);
 
         // 用前两个历元的观测值和状态值计算新历元的状态值
         imu_new.update(imu_old, imu_now);
-        res.push_back(imu_new.get_state_r2d());
+        res.push_back(imu_new.get_state_r2d());     // 转换成结果需要 rad2deg
 
         // 参考状态更新
         imu_old = imu_now;
